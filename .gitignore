@@ -1,1 +1,23 @@
+# claude
+CLAUDE.md
+.claude/*
+.serena
+
+# private folders
 data/
+models/
+notebooks/
+output/
+
+# private files
+*.png
+*.ipynb
+.env
+
+# vscode
+*.pyc
+.vscode/*
+*.db
+webapp/uploads/
+webapp/pages/
+__pycache__/

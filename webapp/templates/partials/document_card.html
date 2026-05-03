@@ -1,0 +1,16 @@
+<div class="doc-card" id="doc-{{ doc.id }}">
+  <div class="doc-info">
+    <span class="doc-name">{{ doc.original_name }}</span>
+    <span class="doc-meta">{{ doc.created_at[:10] }}{% if doc.page_count %} · {{ doc.page_count }} pages{% endif %}</span>
+  </div>
+  <div class="doc-actions">
+    {% include "partials/status_badge.html" %}
+    <button class="btn-delete"
+            hx-delete="/documents/{{ doc.id }}"
+            hx-target="#doc-{{ doc.id }}"
+            hx-swap="outerHTML"
+            hx-confirm="Delete '{{ doc.original_name }}'? This cannot be undone.">
+      &#x2715;
+    </button>
+  </div>
+</div>

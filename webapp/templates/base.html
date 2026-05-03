@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}VAG Study Tool{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/style.css?v={{ static_v }}">
+  <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-brand">VAG Study Tool</a>
+    <span class="nav-sub">Visual Answer Grounding</span>
+  </nav>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

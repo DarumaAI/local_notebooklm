@@ -1,0 +1,12 @@
+{% if doc.status in ('pending', 'processing') %}
+<span class="badge badge-{{ doc.status }}"
+      hx-get="/documents/{{ doc.id }}/status-badge"
+      hx-trigger="every 2s"
+      hx-swap="outerHTML">
+  {% if doc.status == 'processing' %}⟳ processing{% else %}⏳ pending{% endif %}
+</span>
+{% elif doc.status == 'done' %}
+<a href="/documents/{{ doc.id }}/view" class="badge badge-done">Open →</a>
+{% else %}
+<span class="badge badge-error" title="{{ doc.error_message or '' }}">✗ error</span>
+{% endif %}

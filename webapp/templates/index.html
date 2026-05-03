@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}VAG Study Tool — Library{% endblock %}
+
+{% block content %}
+<div class="page-index">
+
+  <section class="upload-section">
+    <h2>Upload a PDF</h2>
+    <form hx-post="/upload"
+          hx-target="#doc-list"
+          hx-swap="afterbegin"
+          hx-encoding="multipart/form-data"
+          hx-indicator="#upload-spinner">
+      <div class="upload-row">
+        <label class="file-label">
+          <input type="file" name="file" accept=".pdf" required id="file-input">
+          <span id="file-name">Choose PDF…</span>
+        </label>
+        <select name="parser" class="parser-select">
+          <option value="opendataloader">OpenDataLoader (local)</option>
+          <option value="docling">Docling / vLLM</option>
+        </select>
+        <button type="submit" class="btn-primary">Upload</button>
+        <span id="upload-spinner" class="spinner htmx-indicator">⟳</span>
+      </div>
+    </form>
+  </section>
+
+  <section class="library-section">
+    <h2>Library</h2>
+    {% if not documents %}
+      <p class="empty-state">No documents yet. Upload a PDF to get started.</p>
+    {% endif %}
+    <div id="doc-list">
+      {% for doc in documents %}
+        {% include "partials/document_card.html" %}
+      {% endfor %}
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.getElementById('file-input').addEventListener('change', function () {
+    const name = this.files[0] ? this.files[0].name : 'Choose PDF…';
+    document.getElementById('file-name').textContent = name;
+  });
+</script>
+{% endblock %}

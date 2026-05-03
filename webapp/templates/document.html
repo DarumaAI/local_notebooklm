@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}{{ document.original_name }} — VAG Study Tool{% endblock %}
+
+{% block content %}
+<div class="viewer-layout" data-doc-id="{{ document.id }}" data-page-num="{{ page_num }}">
+
+  <!-- Left: thumbnail strip -->
+  <aside class="thumb-strip">
+    <a href="/" class="back-link">← Library</a>
+    <h3 class="strip-title">{{ document.original_name }}</h3>
+    {% if pages %}
+      <ul class="thumb-list">
+        {% for page in pages %}
+          <li>
+            <a href="/documents/{{ document.id }}/view?page_num={{ page.page_number }}"
+               class="thumb-link {% if page.page_number == page_num %}active{% endif %}">
+              <img src="/pages/{{ page.id }}/image" alt="Page {{ page.page_number }}" loading="lazy">
+              <span>{{ page.page_number }}</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty-state">
+        {% if document.status == 'processing' %}
+          Processing…
+        {% elif document.status == 'error' %}
+          Error: {{ document.error_message }}
+        {% else %}
+          No pages found.
+        {% endif %}
+      </p>
+    {% endif %}
+  </aside>
+
+  <!-- Centre: page image + bbox canvas -->
+  <section class="page-panel">
+    {% if current_page %}
+      <div class="zoom-controls">
+        <button class="btn-zoom" onclick="zoomOut()" title="Zoom out (Ctrl −)">−</button>
+        <span id="zoom-level">100%</span>
+        <button class="btn-zoom" onclick="zoomIn()" title="Zoom in (Ctrl +)">+</button>
+        <button class="btn-zoom" onclick="zoomReset()" title="Reset zoom (Ctrl 0)">↺</button>
+      </div>
+      <div class="page-container" id="page-container">
+        <img id="page-image"
+             src="/pages/{{ current_page.id }}/image"
+             alt="Page {{ page_num }}"
+             onload="onImageLoad()">
+        <canvas id="bbox-canvas"></canvas>
+      </div>
+      <div class="page-nav">
+        {% if page_num > 1 %}
+          <a href="/documents/{{ document.id }}/view?page_num={{ page_num - 1 }}" class="btn-secondary">← Prev</a>
+        {% endif %}
+        <span>Page {{ page_num }} / {{ document.page_count or '?' }}</span>
+        {% if document.page_count and page_num < document.page_count %}
+          <a href="/documents/{{ document.id }}/view?page_num={{ page_num + 1 }}" class="btn-secondary">Next →</a>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="empty-state-center">
+        <p>{{ document.status | capitalize }}…</p>
+      </div>
+    {% endif %}
+  </section>
+
+  <!-- Right: chat panel -->
+  <aside class="chat-panel">
+    <div class="chat-header"><h3>Chat</h3></div>
+    <div class="chat-messages" id="chat-messages">
+      <p class="empty-state">Ask a question about this document.</p>
+    </div>
+    <form class="chat-input-row" id="chat-form">
+      <textarea class="chat-input" id="chat-input"
+                placeholder="Ask a question… (Ctrl+Enter to send)"
+                rows="2"></textarea>
+      <button type="submit" class="btn-primary">Send</button>
+    </form>
+  </aside>
+
+</div>
+
+<script id="elements-data" type="application/json">{{ elements_json | safe }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/bbox.js?v={{ static_v }}"></script>
+<script src="/static/js/zoom.js?v={{ static_v }}"></script>
+<script src="/static/js/nav.js?v={{ static_v }}"></script>
+<script src="/static/js/chat.js?v={{ static_v }}"></script>
+{% endblock %}
